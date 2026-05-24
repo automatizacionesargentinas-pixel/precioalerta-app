@@ -5,141 +5,495 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ahorramás — Compará precios de supermercados en Argentina</title>
 <meta name="description" content="Compará precios en DIA, Carrefour, Coto, Jumbo, Disco, Changomás y VEA en tiempo real. Encontrá el supermercado más barato cerca tuyo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
+/* ── Reset & Variables ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --verde:       #0A5C36;
+  --verde2:      #0D7A49;
+  --verde-light: #E6F4EE;
+  --verde-glow:  rgba(10,92,54,.15);
+  --acento:      #F5C842;
+  --acento2:     #E8B820;
+  --rojo:        #E03B3B;
+  --negro:       #0D0D0D;
+  --gris1:       #F2F2F0;
+  --gris2:       #E4E4E0;
+  --gris3:       #9A9A94;
+  --blanco:      #FAFAF8;
+  --texto:       #1A1A18;
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --r:  12px;
+  --r2: 20px;
+}
 
-/* Header */
-.header{background:#1a1a1a;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.header-left{display:flex;align-items:center;gap:10px}
-.header h1{font-size:18px;font-weight:600}
-.header-sub{font-size:11px;color:#aaa;margin-top:1px}
-.location-bar{display:flex;align-items:center;gap:8px;background:#2a2a2a;border-radius:100px;padding:6px 12px;border:1px solid #3a3a3a;cursor:pointer;transition:border-color .2s}
-.location-bar:hover{border-color:#4a4a4a}
-.location-icon{font-size:14px}
-.location-text{font-size:12px;color:#ddd;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.location-text.unset{color:#888}
-.location-btn{background:#1d9e75;color:#fff;border:none;border-radius:100px;padding:4px 10px;font-size:11px;cursor:pointer;white-space:nowrap}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--blanco); color: var(--texto); overflow-x: hidden; }
 
-/* Modal de ubicación */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px;padding:24px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.modal h2{font-size:18px;font-weight:600;margin-bottom:6px}
-.modal p{font-size:13px;color:#666;margin-bottom:16px;line-height:1.5}
-.modal-input{width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;outline:none;margin-bottom:10px;letter-spacing:2px}
-.modal-input:focus{border-color:#1a1a1a}
-.modal-btns{display:flex;gap:8px}
-.btn-geo{flex:1;padding:11px;border:1.5px solid #1a1a1a;border-radius:10px;background:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-geo:hover{background:#f5f5f5}
-.btn-cp{flex:1;padding:11px;border:none;border-radius:10px;background:#1a1a1a;color:#fff;font-size:13px;cursor:pointer;font-weight:500}
-.btn-cp:hover{background:#333}
-.modal-or{text-align:center;font-size:12px;color:#bbb;margin:8px 0}
-.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#888}
+/* ── Landing Hero ──────────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  background: var(--negro);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
 
-/* Contenedor */
-.container{max-width:960px;margin:0 auto;padding:16px}
+/* Fondo texturizado */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(10,92,54,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(245,200,66,.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255,255,255,.04)'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  pointer-events: none;
+}
 
-/* Buscador */
-.search-row{display:flex;gap:8px;margin-bottom:12px}
-.search-row input{flex:1;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:100px;font-size:15px;outline:none;background:#fff}
-.search-row input:focus{border-color:#1a1a1a}
-.search-row button{background:#1a1a1a;color:#fff;border:none;border-radius:100px;padding:12px 20px;font-size:15px;cursor:pointer;white-space:nowrap}
-.search-row button:hover{background:#333}
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
 
-/* Radio selector */
-.radio-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.radio-row label{font-size:12px;color:#666}
-.radio-btn{padding:5px 12px;border:1px solid #e0e0e0;border-radius:100px;font-size:12px;cursor:pointer;background:#fff;transition:all .15s}
-.radio-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.radio-row.hidden{display:none}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245,200,66,.12);
+  border: 1px solid rgba(245,200,66,.3);
+  color: var(--acento);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  animation: fadeUp .6s ease both;
+}
+.hero-badge::before { content: '●'; font-size: 8px; animation: pulse 2s ease infinite; }
 
-/* Chips */
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.chip{background:#fff;border:1px solid #e0e0e0;border-radius:100px;padding:6px 14px;font-size:13px;cursor:pointer;color:#555}
-.chip:hover{background:#f0f0f0}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 9vw, 96px);
+  font-weight: 800;
+  line-height: .95;
+  color: #fff;
+  margin-bottom: 12px;
+  animation: fadeUp .7s .1s ease both;
+  letter-spacing: -.02em;
+}
+.hero-title span {
+  color: var(--acento);
+  display: inline-block;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2.5vw, 20px);
+  color: rgba(255,255,255,.55);
+  font-weight: 300;
+  margin-bottom: 48px;
+  animation: fadeUp .7s .2s ease both;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* Buscador hero */
+.hero-search {
+  display: flex;
+  gap: 10px;
+  max-width: 580px;
+  margin: 0 auto 40px;
+  animation: fadeUp .7s .3s ease both;
+}
+.hero-search input {
+  flex: 1;
+  background: rgba(255,255,255,.07);
+  border: 1.5px solid rgba(255,255,255,.12);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 16px 22px;
+  border-radius: 100px;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.hero-search input::placeholder { color: rgba(255,255,255,.3); }
+.hero-search input:focus {
+  border-color: var(--verde2);
+  background: rgba(255,255,255,.1);
+}
+.hero-search button {
+  background: var(--acento);
+  color: var(--negro);
+  border: none;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 16px 28px;
+  border-radius: 100px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s, transform .15s;
+}
+.hero-search button:hover { background: var(--acento2); transform: scale(1.02); }
+.hero-search button:active { transform: scale(.98); }
+
+/* Chips hero */
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  animation: fadeUp .7s .4s ease both;
+  margin-bottom: 56px;
+}
+.hero-chip {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.6);
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.hero-chip:hover {
+  background: rgba(10,92,54,.4);
+  border-color: var(--verde2);
+  color: #fff;
+}
+
+/* Stats hero */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  justify-content: center;
+  animation: fadeUp .7s .5s ease both;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 40px;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  padding: 0 40px;
+  border-right: 1px solid rgba(255,255,255,.08);
+  text-align: center;
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat-num span { color: var(--acento); }
+.hero-stat-label { font-size: 12px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .06em; }
+
+/* ── Sticky header (visible después del scroll) ────────────────────────── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250,250,248,.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--gris2);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.topbar-brand {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--verde);
+  white-space: nowrap;
+}
+.topbar-search {
+  flex: 1;
+  max-width: 500px;
+  display: flex;
+  gap: 8px;
+}
+.topbar-search input {
+  flex: 1;
+  padding: 9px 16px;
+  border: 1.5px solid var(--gris2);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  background: var(--blanco);
+  transition: border-color .2s;
+}
+.topbar-search input:focus { border-color: var(--verde); }
+.topbar-search button {
+  background: var(--verde);
+  color: #fff;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.topbar-search button:hover { background: var(--verde2); }
+
+.loc-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gris1);
+  border: 1px solid var(--gris2);
+  border-radius: 100px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--texto);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+}
+.loc-btn:hover { background: var(--verde-light); border-color: var(--verde); color: var(--verde); }
+.loc-btn .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--verde); flex-shrink: 0; }
+.loc-btn .dot.unset { background: var(--gris3); }
+
+/* ── Contenedor comparador ─────────────────────────────────────────────── */
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+/* Radio */
+.radio-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.radio-row.hidden { display: none; }
+.radio-label { font-size: 12px; color: var(--gris3); font-weight: 500; }
+.radio-btn {
+  padding: 5px 14px;
+  border: 1.5px solid var(--gris2);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  color: var(--gris3);
+  transition: all .15s;
+}
+.radio-btn.active { background: var(--negro); color: #fff; border-color: var(--negro); }
 
 /* Status */
-.status{font-size:13px;color:#888;margin-bottom:12px;min-height:20px;display:flex;align-items:center;gap:6px}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#1d9e75;flex-shrink:0}
-.status-dot.loading{background:#f5a623;animation:pulse .8s ease-in-out infinite alternate}
-.status-dot.error{background:#e24b4a}
+.status {
+  font-size: 13px;
+  color: var(--gris3);
+  margin-bottom: 16px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--verde); flex-shrink: 0; display: none; }
+.status-dot.loading { background: var(--acento); animation: pulse .8s ease infinite alternate; display: block; }
+.status-dot.ok { background: var(--verde); display: block; }
+.status-dot.error { background: var(--rojo); display: block; }
 
-/* Banner ganador */
-.banner{border-radius:12px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:13px;line-height:1.5}
-.banner.hidden{display:none}
-.banner.ganador{background:#e1f5ee;border:1.5px solid #5dcaa5;color:#085041}
-.banner.distancia{background:#fff8e1;border:1.5px solid #f5a623;color:#5a3e00}
-.banner-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+/* Banners */
+.banner { border-radius: var(--r); padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; font-size: 13px; line-height: 1.5; }
+.banner.hidden { display: none; }
+.banner-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.banner.ganador { background: var(--verde-light); border: 1.5px solid rgba(10,92,54,.2); color: #0A4A2C; }
+.banner.distancia { background: #FFFBEA; border: 1.5px solid rgba(245,200,66,.4); color: #5A3E00; }
 
-/* Grid */
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px}
-@media(max-width:800px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:500px){.grid{grid-template-columns:1fr 1fr}}
+/* Grid resultados */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+@media(max-width:600px) { .grid { grid-template-columns: 1fr 1fr; } }
 
-/* Tarjeta de super */
-.scard{background:#fff;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .2s}
-.scard.winner{border:2px solid #1d9e75}
-.scard.far{opacity:.6}
-.sheader{padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #f0f0f0}
-.sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.sname{font-size:12px;font-weight:500;flex:1}
-.sdist{font-size:10px;color:#aaa;white-space:nowrap}
-.sdist.near{color:#1d9e75;font-weight:500}
-.sdist.far{color:#e24b4a}
-.sprods{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:60px}
-.pitem{padding:8px 10px;border-radius:10px;border:1px solid #f0f0f0;background:#fafafa;cursor:pointer}
-.pitem.best{border-color:#1d9e75;background:#e1f5ee}
-.pitem:hover{border-color:#ddd}
-.pname{font-size:11px;color:#1a1a1a;line-height:1.3;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.prow{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
-.pprice{font-size:14px;font-weight:600}
-.pprice.best{color:#0f6e56}
-.pold{font-size:10px;color:#bbb;text-decoration:line-through}
-.pbadge{font-size:9px;font-weight:500;padding:1px 5px;border-radius:4px;background:#fcebeb;color:#a32d2d}
-.pbest{font-size:9px;font-weight:500;padding:1px 5px;border-radius:4px;background:#e1f5ee;color:#085041}
-.pempty{font-size:11px;color:#ccc;text-align:center;padding:16px 0}
-.loading-card{font-size:11px;color:#aaa;text-align:center;padding:16px 0}
+/* Card super */
+.scard {
+  background: #fff;
+  border: 1.5px solid var(--gris2);
+  border-radius: var(--r2);
+  overflow: hidden;
+  transition: box-shadow .2s, transform .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.scard:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-2px); }
+.scard.winner { border-color: var(--verde); box-shadow: 0 0 0 3px var(--verde-glow); }
+.scard.far { opacity: .5; }
 
-/* Tabla ranking */
-.summary{background:#fff;border:1px solid #e8e8e8;border-radius:14px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.summary-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.srow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
-.srow:last-child{border-bottom:none}
-.sleft{display:flex;align-items:center;gap:7px}
-.sdot-sm{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.sprice{font-weight:600;font-size:14px}
-.sprice.best{color:#0f6e56}
-.stag{font-size:10px;color:#085041;background:#e1f5ee;padding:1px 7px;border-radius:4px}
-.sdist-tag{font-size:10px;color:#666;margin-left:4px}
+.sheader {
+  padding: 10px 12px 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid var(--gris1);
+}
+.sdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sname { font-family: var(--font-display); font-size: 12px; font-weight: 700; flex: 1; color: var(--texto); }
+.sdist { font-size: 10px; white-space: nowrap; font-weight: 500; }
+.sdist.near { color: var(--verde); }
+.sdist.far  { color: var(--rojo); }
+
+.sprods { padding: 8px; display: flex; flex-direction: column; gap: 6px; min-height: 64px; }
+.pitem {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--gris1);
+  background: var(--gris1);
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.pitem:hover { border-color: var(--gris2); }
+.pitem.best { border-color: rgba(10,92,54,.25); background: var(--verde-light); }
+.pname { font-size: 11px; color: var(--texto); line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.prow { display: flex; align-items: baseline; gap: 5px; flex-wrap: wrap; }
+.pprice { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--texto); }
+.pprice.best { color: var(--verde); }
+.pold { font-size: 10px; color: var(--gris3); text-decoration: line-through; }
+.pbadge { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 4px; background: #FFEAEA; color: var(--rojo); }
+.pbest { font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: var(--verde-light); color: var(--verde); }
+.pempty { font-size: 11px; color: var(--gris3); text-align: center; padding: 16px 0; }
+.loading-card { font-size: 11px; color: var(--gris3); text-align: center; padding: 16px 0; }
+
+/* Ranking */
+.summary {
+  background: #fff;
+  border: 1.5px solid var(--gris2);
+  border-radius: var(--r2);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.summary.hidden { display: none; }
+.summary-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--gris1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.summary-title { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--gris3); text-transform: uppercase; letter-spacing: .06em; }
+.srow { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; border-bottom: 1px solid var(--gris1); font-size: 13px; transition: background .15s; }
+.srow:last-child { border-bottom: none; }
+.srow:hover { background: var(--gris1); }
+.sleft { display: flex; align-items: center; gap: 8px; }
+.sdot-sm { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sprice { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--texto); }
+.sprice.best { color: var(--verde); }
+.stag { font-size: 10px; font-weight: 600; color: var(--verde); background: var(--verde-light); padding: 2px 8px; border-radius: 100px; }
+.sdist-tag { font-size: 11px; color: var(--gris3); }
 
 /* Empty state */
-.empty-state{text-align:center;padding:48px 16px;color:#aaa}
-.empty-state h2{font-size:20px;font-weight:500;color:#555;margin-bottom:8px}
-.empty-state p{font-size:14px;line-height:1.6}
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state.hidden { display: none; }
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--texto); margin-bottom: 8px; }
+.empty-state p { font-size: 14px; color: var(--gris3); line-height: 1.6; }
 
-@keyframes pulse{from{opacity:.4}to{opacity:1}}
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: var(--r2);
+  padding: 28px 24px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 24px 60px rgba(0,0,0,.2);
+  animation: modalIn .25s ease;
+  position: relative;
+}
+.modal h2 { font-family: var(--font-display); font-size: 20px; font-weight: 800; margin-bottom: 6px; color: var(--texto); }
+.modal p { font-size: 13px; color: var(--gris3); margin-bottom: 18px; line-height: 1.5; }
+.modal-close { position: absolute; top: 16px; right: 16px; background: var(--gris1); border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; color: var(--gris3); transition: background .2s; }
+.modal-close:hover { background: var(--gris2); }
+.modal-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--gris2);
+  border-radius: var(--r);
+  font-family: var(--font-body);
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  transition: border-color .2s;
+}
+.modal-input:focus { border-color: var(--verde); }
+.modal-btns { display: flex; gap: 8px; }
+.btn-geo {
+  flex: 1; padding: 11px; border: 1.5px solid var(--gris2); border-radius: var(--r);
+  background: #fff; font-family: var(--font-body); font-size: 13px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all .2s;
+}
+.btn-geo:hover { border-color: var(--verde); color: var(--verde); }
+.btn-cp {
+  flex: 1; padding: 11px; border: none; border-radius: var(--r);
+  background: var(--verde); color: #fff; font-family: var(--font-display); font-size: 13px;
+  font-weight: 700; cursor: pointer; transition: background .2s;
+}
+.btn-cp:hover { background: var(--verde2); }
+.modal-status { font-size: 12px; color: var(--gris3); text-align: center; margin-top: 10px; min-height: 18px; }
+
+/* Animaciones */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { from { opacity: .4; } to { opacity: 1; } }
+@keyframes modalIn { from { opacity: 0; transform: scale(.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* Responsive topbar */
+@media(max-width:640px) {
+  .topbar { flex-wrap: wrap; }
+  .topbar-brand { font-size: 15px; }
+  .topbar-search { max-width: 100%; flex: 1 1 100%; order: 3; }
+  .hero-stat { padding: 0 20px; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <div>
-      <h1>🛒 Ahorramás</h1>
-      <div class="header-sub">Compará precios en 7 supermercados argentinos</div>
-    </div>
-  </div>
-  <div class="location-bar" onclick="abrirModal()">
-    <span class="location-icon">📍</span>
-    <span class="location-text unset" id="loc-label">Agregar ubicación</span>
-    <button class="location-btn" id="loc-btn">Configurar</button>
-  </div>
-</div>
-
-<!-- Modal ubicación -->
+<!-- ── Modal ubicación ──────────────────────────────────────────────────── -->
 <div class="modal-overlay" id="modal">
-  <div class="modal" style="position:relative">
+  <div class="modal">
     <button class="modal-close" onclick="cerrarModal()">✕</button>
     <h2>📍 Tu ubicación</h2>
     <p>Ingresá tu código postal o usá tu ubicación actual para ver los supermercados más cercanos a vos.</p>
@@ -147,50 +501,98 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       oninput="this.value=this.value.replace(/\D/g,'')"
       onkeydown="if(event.key==='Enter')guardarCP()">
     <div class="modal-btns">
-      <button class="btn-geo" onclick="usarGeolocalizacion()">📡 Usar mi ubicación</button>
-      <button class="btn-cp" onclick="guardarCP()">Guardar CP</button>
+      <button class="btn-geo" onclick="usarGeolocalizacion()">📡 Mi ubicación</button>
+      <button class="btn-cp" onclick="guardarCP()">Guardar</button>
     </div>
-    <div id="modal-status" style="font-size:12px;color:#888;text-align:center;margin-top:10px;min-height:18px"></div>
+    <div id="modal-status" class="modal-status"></div>
   </div>
 </div>
 
-<div class="container">
-  <div class="search-row">
-    <input type="text" id="q" placeholder="Buscar producto... ej: leche entera, aceite, yerba">
-    <button onclick="buscar()">🔍 Comparar</button>
-  </div>
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">7 supermercados · Tiempo real</div>
+    <h1 class="hero-title">Ahorramás<span>.</span></h1>
+    <p class="hero-sub">Encontrá el precio más bajo de cualquier producto en los 7 supermercados más grandes de Argentina, en segundos.</p>
 
-  <!-- Radio de búsqueda (solo visible si hay ubicación) -->
+    <div class="hero-search">
+      <input type="text" id="q-hero" placeholder="Buscar producto... ej: leche entera" onkeydown="if(event.key==='Enter')buscarDesdeHero()">
+      <button onclick="buscarDesdeHero()">Comparar →</button>
+    </div>
+
+    <div class="hero-chips" id="chips-hero"></div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">7<span>+</span></div>
+        <div class="hero-stat-label">Supermercados</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2.9<span>K</span></div>
+        <div class="hero-stat-label">Productos</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">40<span>%</span></div>
+        <div class="hero-stat-label">Diferencia máx.</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">6<span>h</span></div>
+        <div class="hero-stat-label">Actualización</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARADOR (sticky header + resultados) ─────────────────────────── -->
+<header class="topbar" id="topbar">
+  <span class="topbar-brand">Ahorramás</span>
+  <div class="topbar-search">
+    <input type="text" id="q" placeholder="Buscar producto..." onkeydown="if(event.key==='Enter')buscar()">
+    <button onclick="buscar()">Buscar</button>
+  </div>
+  <button class="loc-btn" onclick="abrirModal()">
+    <span class="dot unset" id="loc-dot"></span>
+    <span id="loc-label">Ubicación</span>
+  </button>
+</header>
+
+<div class="app" id="app">
   <div class="radio-row hidden" id="radio-row">
-    <label>Radio:</label>
-    <span class="radio-btn active" data-km="5" onclick="setRadio(this)">5 km</span>
-    <span class="radio-btn" data-km="10" onclick="setRadio(this)">10 km</span>
-    <span class="radio-btn" data-km="20" onclick="setRadio(this)">20 km</span>
-    <span class="radio-btn" data-km="50" onclick="setRadio(this)">Todo</span>
+    <span class="radio-label">Radio:</span>
+    <span class="radio-btn active" data-km="5"  onclick="setRadio(this)">5 km</span>
+    <span class="radio-btn"        data-km="10" onclick="setRadio(this)">10 km</span>
+    <span class="radio-btn"        data-km="20" onclick="setRadio(this)">20 km</span>
+    <span class="radio-btn"        data-km="50" onclick="setRadio(this)">Todo</span>
   </div>
 
-  <div class="chips" id="chips"></div>
   <div class="status" id="status">
-    <span id="status-dot" class="status-dot" style="display:none"></span>
-    <span id="status-txt">Buscá un producto para comparar precios en 5 supermercados.</span>
+    <span class="status-dot" id="status-dot"></span>
+    <span id="status-txt"></span>
   </div>
+
   <div class="banner hidden" id="banner-ganador"><span class="banner-icon">🏆</span><span id="banner-txt"></span></div>
   <div class="banner hidden" id="banner-distancia"><span class="banner-icon">📍</span><span id="banner-dist-txt"></span></div>
+
   <div class="grid" id="grid"></div>
+
   <div class="summary hidden" id="summary">
-    <div class="summary-title">Ranking de precios</div>
+    <div class="summary-header">
+      <span class="summary-title">Ranking de precios</span>
+    </div>
     <div id="srows"></div>
   </div>
+
   <div class="empty-state hidden" id="empty">
+    <div class="empty-icon">🔍</div>
     <h2>Sin resultados</h2>
     <p>No encontramos ese producto.<br>Probá con otro nombre o término más general.</p>
   </div>
 </div>
 
 <script>
-// ─── Constantes ───────────────────────────────────────────────────────────────
-const BACKEND = 'https://precioalerta-backend-production.up.railway.app';
-const SUPERS = [
+// ── Constantes ────────────────────────────────────────────────────────────
+const BACKEND  = 'https://precioalerta-backend-production.up.railway.app';
+const SUPERS   = [
   {id:'carrefour',  nombre:'Carrefour',  color:'#004A97'},
   {id:'dia',        nombre:'DIA',        color:'#E30613'},
   {id:'coto',       nombre:'Coto',       color:'#CC0000'},
@@ -200,403 +602,201 @@ const SUPERS = [
   {id:'vea',        nombre:'VEA',        color:'#0070C0'},
 ];
 const SUGERIDAS = ['leche entera','aceite girasol','yerba mate','arroz','fideos','azúcar','detergente','pollo'];
-
-// Sucursales principales por cadena con coordenadas (lat, lon)
-// Cargadas de forma estática — se pueden expandir via API en v3
 const SUCURSALES = {
-  carrefour: [
-    {nombre:'Carrefour Quilmes',         lat:-34.7228, lon:-58.2562},
-    {nombre:'Carrefour Bernal',          lat:-34.7058, lon:-58.2847},
-    {nombre:'Carrefour Avellaneda',      lat:-34.6633, lon:-58.3685},
-    {nombre:'Carrefour Lanús',           lat:-34.7003, lon:-58.3877},
-    {nombre:'Carrefour San Justo',       lat:-34.6826, lon:-58.5604},
-    {nombre:'Carrefour Caballito',       lat:-34.6187, lon:-58.4343},
-    {nombre:'Carrefour Palermo',         lat:-34.5819, lon:-58.4270},
-    {nombre:'Carrefour Belgrano',        lat:-34.5571, lon:-58.4603},
-    {nombre:'Carrefour Devoto',          lat:-34.5990, lon:-58.5123},
-    {nombre:'Carrefour Morón',           lat:-34.6511, lon:-58.6193},
-    {nombre:'Carrefour La Plata',        lat:-34.9205, lon:-57.9536},
-    {nombre:'Carrefour Mar del Plata',   lat:-38.0082, lon:-57.5458},
-    {nombre:'Carrefour Rosario',         lat:-32.9587, lon:-60.6931},
-    {nombre:'Carrefour Córdoba',         lat:-31.4135, lon:-64.1815},
-    {nombre:'Carrefour Mendoza',         lat:-32.8908, lon:-68.8272},
-  ],
-  dia: [
-    {nombre:'DIA Quilmes Centro',        lat:-34.7204, lon:-58.2543},
-    {nombre:'DIA Quilmes Oeste',         lat:-34.7318, lon:-58.2712},
-    {nombre:'DIA Bernal',                lat:-34.7091, lon:-58.2803},
-    {nombre:'DIA Berazategui',           lat:-34.7635, lon:-58.2109},
-    {nombre:'DIA Avellaneda',            lat:-34.6641, lon:-58.3654},
-    {nombre:'DIA Lanús Este',            lat:-34.6975, lon:-58.3785},
-    {nombre:'DIA Lanús Oeste',           lat:-34.7044, lon:-58.4012},
-    {nombre:'DIA Lomas de Zamora',       lat:-34.7597, lon:-58.4003},
-    {nombre:'DIA Floresta',              lat:-34.6291, lon:-58.4807},
-    {nombre:'DIA Caballito',             lat:-34.6165, lon:-58.4311},
-    {nombre:'DIA Villa del Parque',      lat:-34.5988, lon:-58.4845},
-    {nombre:'DIA Palermo',               lat:-34.5851, lon:-58.4292},
-    {nombre:'DIA Belgrano',              lat:-34.5612, lon:-58.4571},
-    {nombre:'DIA La Plata Centro',       lat:-34.9214, lon:-57.9543},
-    {nombre:'DIA La Plata Norte',        lat:-34.8989, lon:-57.9487},
-    {nombre:'DIA Rosario',               lat:-32.9442, lon:-60.6503},
-    {nombre:'DIA Córdoba',               lat:-31.4023, lon:-64.1834},
-    {nombre:'DIA Mendoza',               lat:-32.8847, lon:-68.8341},
-  ],
-  coto: [
-    {nombre:'Coto Quilmes',              lat:-34.7215, lon:-58.2601},
-    {nombre:'Coto Wilde',                lat:-34.6941, lon:-58.3142},
-    {nombre:'Coto Avellaneda',           lat:-34.6618, lon:-58.3712},
-    {nombre:'Coto Lanús',                lat:-34.7012, lon:-58.3921},
-    {nombre:'Coto Lomas de Zamora',      lat:-34.7584, lon:-58.3961},
-    {nombre:'Coto Temperley',            lat:-34.7784, lon:-58.3836},
-    {nombre:'Coto Florencio Varela',     lat:-34.8007, lon:-58.2742},
-    {nombre:'Coto San Isidro',           lat:-34.4719, lon:-58.5278},
-    {nombre:'Coto Vicente López',        lat:-34.5279, lon:-58.4884},
-    {nombre:'Coto Devoto',               lat:-34.6013, lon:-58.5188},
-    {nombre:'Coto Palermo',              lat:-34.5803, lon:-58.4256},
-    {nombre:'Coto Belgrano',             lat:-34.5589, lon:-58.4618},
-    {nombre:'Coto La Plata',             lat:-34.9178, lon:-57.9521},
-    {nombre:'Coto Rosario',              lat:-32.9501, lon:-60.6612},
-    {nombre:'Coto Córdoba',              lat:-31.4195, lon:-64.1794},
-  ],
-  jumbo: [
-    {nombre:'Jumbo Quilmes',             lat:-34.7289, lon:-58.2648},
-    {nombre:'Jumbo Avellaneda',          lat:-34.6602, lon:-58.3781},
-    {nombre:'Jumbo Palermo',             lat:-34.5784, lon:-58.4213},
-    {nombre:'Jumbo Belgrano',            lat:-34.5545, lon:-58.4589},
-    {nombre:'Jumbo Nordelta',            lat:-34.3912, lon:-58.6673},
-    {nombre:'Jumbo Pilar',               lat:-34.4618, lon:-58.9124},
-    {nombre:'Jumbo La Plata',            lat:-34.9001, lon:-57.9614},
-    {nombre:'Jumbo Mar del Plata',       lat:-38.0124, lon:-57.5512},
-    {nombre:'Jumbo Rosario',             lat:-32.9612, lon:-60.6845},
-    {nombre:'Jumbo Córdoba',             lat:-31.4089, lon:-64.1902},
-    {nombre:'Jumbo Mendoza',             lat:-32.8972, lon:-68.8195},
-    {nombre:'Jumbo San Juan',            lat:-31.5351, lon:-68.5234},
-  ],
-  disco: [
-    {nombre:'Disco Quilmes',             lat:-34.7198, lon:-58.2589},
-    {nombre:'Disco Bernal',              lat:-34.7074, lon:-58.2831},
-    {nombre:'Disco Berazategui',         lat:-34.7612, lon:-58.2087},
-    {nombre:'Disco Temperley',           lat:-34.7801, lon:-58.3812},
-    {nombre:'Disco La Plata',            lat:-34.9193, lon:-57.9558},
-    {nombre:'Disco Palermo',             lat:-34.5831, lon:-58.4248},
-    {nombre:'Disco Belgrano',            lat:-34.5567, lon:-58.4634},
-    {nombre:'Disco Recoleta',            lat:-34.5871, lon:-58.3934},
-    {nombre:'Disco Vicente López',       lat:-34.5301, lon:-58.4912},
-    {nombre:'Disco San Isidro',          lat:-34.4741, lon:-58.5261},
-    {nombre:'Disco Mar del Plata',       lat:-38.0051, lon:-57.5481},
-    {nombre:'Disco Rosario',             lat:-32.9489, lon:-60.6734},
-  ],
-  changomas: [
-    {nombre:'Changomás Quilmes',         lat:-34.7231, lon:-58.2578},
-    {nombre:'Changomás Avellaneda',      lat:-34.6647, lon:-58.3703},
-    {nombre:'Changomás Lanús',           lat:-34.7038, lon:-58.3912},
-    {nombre:'Changomás Lomas de Zamora', lat:-34.7601, lon:-58.3989},
-    {nombre:'Changomás Florencio Varela',lat:-34.8019, lon:-58.2731},
-    {nombre:'Changomás San Justo',       lat:-34.6839, lon:-58.5612},
-    {nombre:'Changomás Morón',           lat:-34.6524, lon:-58.6201},
-    {nombre:'Changomás La Plata',        lat:-34.9221, lon:-57.9548},
-    {nombre:'Changomás Mar del Plata',   lat:-38.0101, lon:-57.5502},
-    {nombre:'Changomás Rosario',         lat:-32.9534, lon:-60.6721},
-    {nombre:'Changomás Córdoba',         lat:-31.4112, lon:-64.1821},
-    {nombre:'Changomás Mendoza',         lat:-32.8931, lon:-68.8261},
-    {nombre:'Changomás Neuquén',         lat:-38.9516, lon:-68.0591},
-    {nombre:'Changomás San Luis',        lat:-33.2951, lon:-66.3361},
-  ],
-  vea: [
-    {nombre:'VEA Quilmes',               lat:-34.7209, lon:-58.2597},
-    {nombre:'VEA La Plata',              lat:-34.9201, lon:-57.9567},
-    {nombre:'VEA Mar del Plata',         lat:-38.0071, lon:-57.5491},
-    {nombre:'VEA Mendoza',               lat:-32.8921, lon:-68.8231},
-    {nombre:'VEA Rosario',               lat:-32.9478, lon:-60.6678},
-    {nombre:'VEA Córdoba',               lat:-31.4071, lon:-64.1789},
-    {nombre:'VEA San Juan',              lat:-31.5378, lon:-68.5198},
-    {nombre:'VEA Tucumán',               lat:-26.8241, lon:-65.2031},
-    {nombre:'VEA Neuquén',               lat:-38.9489, lon:-68.0612},
-    {nombre:'VEA Bahía Blanca',          lat:-38.7183, lon:-62.2663},
-  ],
+  carrefour:[{nombre:'Carrefour Quilmes',lat:-34.7228,lon:-58.2562},{nombre:'Carrefour Bernal',lat:-34.7058,lon:-58.2847},{nombre:'Carrefour Avellaneda',lat:-34.6633,lon:-58.3685},{nombre:'Carrefour Lanús',lat:-34.7003,lon:-58.3877},{nombre:'Carrefour Palermo',lat:-34.5819,lon:-58.4270},{nombre:'Carrefour Belgrano',lat:-34.5571,lon:-58.4603},{nombre:'Carrefour Morón',lat:-34.6511,lon:-58.6193},{nombre:'Carrefour La Plata',lat:-34.9205,lon:-57.9536},{nombre:'Carrefour Mar del Plata',lat:-38.0082,lon:-57.5458},{nombre:'Carrefour Rosario',lat:-32.9587,lon:-60.6931},{nombre:'Carrefour Córdoba',lat:-31.4135,lon:-64.1815}],
+  dia:[{nombre:'DIA Quilmes Centro',lat:-34.7204,lon:-58.2543},{nombre:'DIA Quilmes Oeste',lat:-34.7318,lon:-58.2712},{nombre:'DIA Bernal',lat:-34.7091,lon:-58.2803},{nombre:'DIA Avellaneda',lat:-34.6641,lon:-58.3654},{nombre:'DIA Lanús',lat:-34.6975,lon:-58.3785},{nombre:'DIA Caballito',lat:-34.6165,lon:-58.4311},{nombre:'DIA Palermo',lat:-34.5851,lon:-58.4292},{nombre:'DIA Belgrano',lat:-34.5612,lon:-58.4571},{nombre:'DIA La Plata',lat:-34.9214,lon:-57.9543},{nombre:'DIA Rosario',lat:-32.9442,lon:-60.6503},{nombre:'DIA Córdoba',lat:-31.4023,lon:-64.1834}],
+  coto:[{nombre:'Coto Quilmes',lat:-34.7215,lon:-58.2601},{nombre:'Coto Wilde',lat:-34.6941,lon:-58.3142},{nombre:'Coto Avellaneda',lat:-34.6618,lon:-58.3712},{nombre:'Coto Palermo',lat:-34.5803,lon:-58.4256},{nombre:'Coto Belgrano',lat:-34.5589,lon:-58.4618},{nombre:'Coto La Plata',lat:-34.9178,lon:-57.9521},{nombre:'Coto Rosario',lat:-32.9501,lon:-60.6612},{nombre:'Coto Córdoba',lat:-31.4195,lon:-64.1794}],
+  jumbo:[{nombre:'Jumbo Quilmes',lat:-34.7289,lon:-58.2648},{nombre:'Jumbo Avellaneda',lat:-34.6602,lon:-58.3781},{nombre:'Jumbo Palermo',lat:-34.5784,lon:-58.4213},{nombre:'Jumbo Belgrano',lat:-34.5545,lon:-58.4589},{nombre:'Jumbo La Plata',lat:-34.9001,lon:-57.9614},{nombre:'Jumbo Mar del Plata',lat:-38.0124,lon:-57.5512},{nombre:'Jumbo Rosario',lat:-32.9612,lon:-60.6845},{nombre:'Jumbo Córdoba',lat:-31.4089,lon:-64.1902}],
+  disco:[{nombre:'Disco Quilmes',lat:-34.7198,lon:-58.2589},{nombre:'Disco Bernal',lat:-34.7074,lon:-58.2831},{nombre:'Disco Palermo',lat:-34.5831,lon:-58.4248},{nombre:'Disco Belgrano',lat:-34.5567,lon:-58.4634},{nombre:'Disco La Plata',lat:-34.9193,lon:-57.9558},{nombre:'Disco Mar del Plata',lat:-38.0051,lon:-57.5481},{nombre:'Disco Rosario',lat:-32.9489,lon:-60.6734}],
+  changomas:[{nombre:'Changomás Quilmes',lat:-34.7231,lon:-58.2578},{nombre:'Changomás Avellaneda',lat:-34.6647,lon:-58.3703},{nombre:'Changomás Lanús',lat:-34.7038,lon:-58.3912},{nombre:'Changomás Morón',lat:-34.6524,lon:-58.6201},{nombre:'Changomás La Plata',lat:-34.9221,lon:-57.9548},{nombre:'Changomás Rosario',lat:-32.9534,lon:-60.6721},{nombre:'Changomás Córdoba',lat:-31.4112,lon:-64.1821}],
+  vea:[{nombre:'VEA Quilmes',lat:-34.7209,lon:-58.2597},{nombre:'VEA La Plata',lat:-34.9201,lon:-57.9567},{nombre:'VEA Mar del Plata',lat:-38.0071,lon:-57.5491},{nombre:'VEA Rosario',lat:-32.9478,lon:-60.6678},{nombre:'VEA Córdoba',lat:-31.4071,lon:-64.1789},{nombre:'VEA Mendoza',lat:-32.8921,lon:-68.8231}],
 };
 
-// ─── Estado ──────────────────────────────────────────────────────────────────
-let userLat = null, userLon = null, userLabel = '', radioKm = 5;
-const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
+// ── Estado ────────────────────────────────────────────────────────────────
+let userLat=null, userLon=null, userLabel='', radioKm=5;
+const fmt = n => '$'+Math.round(n).toLocaleString('es-AR');
 
-function haversine(lat1, lon1, lat2, lon2) {
-  const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
+function haversine(la1,lo1,la2,lo2){const R=6371,dL=(la2-la1)*Math.PI/180,dO=(lo2-lo1)*Math.PI/180,a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+function sucMasCercana(sid){if(!userLat||!SUCURSALES[sid])return null;let b=null,bd=Infinity;for(const s of SUCURSALES[sid]){const d=haversine(userLat,userLon,s.lat,s.lon);if(d<bd){bd=d;b={...s,distKm:d};}}return b;}
 
-function sucursalMasCercana(supId) {
-  if (!userLat || !SUCURSALES[supId]) return null;
-  let best = null, bestDist = Infinity;
-  for (const s of SUCURSALES[supId]) {
-    const d = haversine(userLat, userLon, s.lat, s.lon);
-    if (d < bestDist) { bestDist = d; best = {...s, distKm: d}; }
-  }
-  return best;
-}
-
-// ─── Modal / Ubicación ────────────────────────────────────────────────────────
-function abrirModal() {
-  document.getElementById('modal').classList.add('open');
-  document.getElementById('cp-input').focus();
-  document.getElementById('modal-status').textContent = '';
-}
-function cerrarModal() { document.getElementById('modal').classList.remove('open'); }
-document.getElementById('modal').addEventListener('click', e => { if(e.target===document.getElementById('modal')) cerrarModal(); });
-
-async function usarGeolocalizacion() {
-  const st = document.getElementById('modal-status');
-  st.textContent = 'Obteniendo ubicación...';
-  if (!navigator.geolocation) { st.textContent = 'Tu navegador no soporta geolocalización.'; return; }
-  navigator.geolocation.getCurrentPosition(async pos => {
-    userLat = pos.coords.latitude;
-    userLon = pos.coords.longitude;
-    // Geocodificación inversa con Nominatim
-    try {
-      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&accept-language=es`, {headers:{'User-Agent':'Ahorramas/1.0'}});
-      const d = await r.json();
-      const barrio = d.address?.suburb || d.address?.neighbourhood || d.address?.village || '';
-      const ciudad = d.address?.city || d.address?.town || d.address?.municipality || '';
-      const cp = d.address?.postcode || '';
-      userLabel = [barrio, ciudad].filter(Boolean).join(', ') + (cp ? ` (${cp})` : '');
-    } catch { userLabel = `${userLat.toFixed(4)}, ${userLon.toFixed(4)}`; }
-    guardarUbicacionEnStorage();
-    actualizarHeaderUbicacion();
-    cerrarModal();
-    if (document.getElementById('q').value.trim()) buscar();
-  }, err => {
-    st.textContent = 'No se pudo obtener la ubicación. Intentá con el código postal.';
-  }, { timeout: 8000 });
-}
-
-async function guardarCP() {
-  const cp = document.getElementById('cp-input').value.trim();
-  if (!cp || cp.length < 4) { document.getElementById('modal-status').textContent = 'Ingresá un código postal válido (4 dígitos).'; return; }
-  const st = document.getElementById('modal-status');
-  st.textContent = 'Buscando ubicación...';
-  try {
-    // API datos.gob.ar — georef Argentina
-    const r = await fetch(`https://apis.datos.gob.ar/georef/api/localidades?campos=nombre,centroide,provincia&codigo_postal=${cp}&max=1`);
-    const d = await r.json();
-    if (d.localidades?.length) {
-      const loc = d.localidades[0];
-      userLat = loc.centroide.lat;
-      userLon = loc.centroide.lon;
-      userLabel = `${loc.nombre}, ${loc.provincia.nombre} (CP ${cp})`;
-    } else {
-      // Fallback: Nominatim
-      const r2 = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cp}&country=Argentina&format=json&limit=1`, {headers:{'User-Agent':'Ahorramas/1.0'}});
-      const d2 = await r2.json();
-      if (d2.length) {
-        userLat = parseFloat(d2[0].lat);
-        userLon = parseFloat(d2[0].lon);
-        userLabel = `CP ${cp}`;
-      } else {
-        st.textContent = 'No encontramos ese código postal. Revisá el número.';
-        return;
-      }
-    }
-    guardarUbicacionEnStorage();
-    actualizarHeaderUbicacion();
-    cerrarModal();
-    if (document.getElementById('q').value.trim()) buscar();
-  } catch(e) {
-    st.textContent = 'Error al buscar el código postal. Intentá de nuevo.';
-  }
-}
-
-function guardarUbicacionEnStorage() {
-  try { localStorage.setItem('pa_ubicacion', JSON.stringify({lat:userLat, lon:userLon, label:userLabel})); } catch{}
-}
-
-function cargarUbicacionDeStorage() {
-  try {
-    const d = JSON.parse(localStorage.getItem('pa_ubicacion') || 'null');
-    if (d?.lat && d?.lon) { userLat = d.lat; userLon = d.lon; userLabel = d.label || ''; actualizarHeaderUbicacion(); }
-  } catch{}
-}
-
-function actualizarHeaderUbicacion() {
-  const lbl = document.getElementById('loc-label');
-  const btn = document.getElementById('loc-btn');
-  lbl.textContent = userLabel || 'Ubicación configurada';
-  lbl.classList.remove('unset');
-  btn.textContent = 'Cambiar';
-  document.getElementById('radio-row').classList.remove('hidden');
-}
-
-function setRadio(el) {
-  document.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  radioKm = parseInt(el.dataset.km);
-  if (document.getElementById('q').value.trim()) buscar();
-}
-
-// ─── Chips ────────────────────────────────────────────────────────────────────
-const chipsEl = document.getElementById('chips');
-SUGERIDAS.forEach(s => {
-  const c = document.createElement('span');
-  c.className = 'chip'; c.textContent = s;
-  c.onclick = () => { document.getElementById('q').value = s; buscar(); };
-  chipsEl.appendChild(c);
+// ── Chips ─────────────────────────────────────────────────────────────────
+['chips-hero'].forEach(id=>{
+  const el=document.getElementById(id);
+  SUGERIDAS.forEach(s=>{
+    const c=document.createElement('span');
+    c.className='hero-chip'; c.textContent=s;
+    c.onclick=()=>{document.getElementById('q-hero').value=s; buscarDesdeHero();};
+    el.appendChild(c);
+  });
 });
 
-// ─── Búsqueda ─────────────────────────────────────────────────────────────────
-function setStatus(txt, type='normal') {
-  const dot = document.getElementById('status-dot');
-  const span = document.getElementById('status-txt');
-  span.textContent = txt;
-  dot.className = 'status-dot ' + (type==='loading'?'loading':type==='error'?'error':'');
-  dot.style.display = type==='normal'&&!txt ? 'none' : 'block';
+// ── Ubicación ─────────────────────────────────────────────────────────────
+function abrirModal(){document.getElementById('modal').classList.add('open');document.getElementById('cp-input').focus();document.getElementById('modal-status').textContent='';}
+function cerrarModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))cerrarModal();});
+
+async function usarGeolocalizacion(){
+  const st=document.getElementById('modal-status');
+  st.textContent='Obteniendo ubicación...';
+  if(!navigator.geolocation){st.textContent='Tu navegador no soporta geolocalización.';return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    userLat=pos.coords.latitude; userLon=pos.coords.longitude;
+    try{
+      const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&accept-language=es`,{headers:{'User-Agent':'Ahorramas/1.0'}});
+      const d=await r.json();
+      const barrio=d.address?.suburb||d.address?.neighbourhood||'';
+      const ciudad=d.address?.city||d.address?.town||'';
+      const cp=d.address?.postcode||'';
+      userLabel=[barrio,ciudad].filter(Boolean).join(', ')+(cp?` (${cp})`:'');
+    }catch{userLabel=`${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;}
+    guardarUbicacion(); actualizarHeaderLoc(); cerrarModal();
+    if(document.getElementById('q').value.trim())buscar();
+  },()=>{st.textContent='No se pudo obtener la ubicación. Ingresá tu código postal.';},{timeout:8000});
 }
 
-function mkCard(s, distInfo) {
-  const near = distInfo && distInfo.distKm <= radioKm;
-  const far = distInfo && distInfo.distKm > radioKm;
-  const card = document.createElement('div');
-  card.className = 'scard' + (far?' far':'');
-  card.id = 'card-'+s.id;
-  let distHtml = '';
-  if (distInfo) {
-    const km = distInfo.distKm.toFixed(1);
-    const cls = distInfo.distKm <= 2 ? 'near' : distInfo.distKm > radioKm ? 'far' : '';
-    const icon = distInfo.distKm <= 2 ? '✓' : distInfo.distKm > radioKm ? '✗' : '';
-    distHtml = `<span class="sdist ${cls}">${icon} ${km}km</span>`;
-  }
-  card.innerHTML = `<div class="sheader"><div class="sdot" style="background:${s.color}"></div><span class="sname">${s.nombre}</span>${distHtml}</div><div class="sprods" id="prods-${s.id}"><div class="loading-card">Cargando...</div></div>`;
+async function guardarCP(){
+  const cp=document.getElementById('cp-input').value.trim();
+  if(!cp||cp.length<4){document.getElementById('modal-status').textContent='Ingresá un código postal válido.';return;}
+  const st=document.getElementById('modal-status');
+  st.textContent='Buscando...';
+  try{
+    const r=await fetch(`https://apis.datos.gob.ar/georef/api/localidades?campos=nombre,centroide,provincia&codigo_postal=${cp}&max=1`);
+    const d=await r.json();
+    if(d.localidades?.length){const l=d.localidades[0];userLat=l.centroide.lat;userLon=l.centroide.lon;userLabel=`${l.nombre}, ${l.provincia.nombre} (CP ${cp})`;}
+    else{
+      const r2=await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cp}&country=Argentina&format=json&limit=1`,{headers:{'User-Agent':'Ahorramas/1.0'}});
+      const d2=await r2.json();
+      if(d2.length){userLat=parseFloat(d2[0].lat);userLon=parseFloat(d2[0].lon);userLabel=`CP ${cp}`;}
+      else{st.textContent='No encontramos ese código postal.';return;}
+    }
+    guardarUbicacion(); actualizarHeaderLoc(); cerrarModal();
+    if(document.getElementById('q').value.trim())buscar();
+  }catch{st.textContent='Error al buscar el código postal.';}
+}
+
+function guardarUbicacion(){try{localStorage.setItem('pa_ub',JSON.stringify({lat:userLat,lon:userLon,label:userLabel}));}catch{}}
+function cargarUbicacion(){try{const d=JSON.parse(localStorage.getItem('pa_ub')||'null');if(d?.lat&&d?.lon){userLat=d.lat;userLon=d.lon;userLabel=d.label||'';actualizarHeaderLoc();}}catch{}}
+function actualizarHeaderLoc(){
+  const lbl=document.getElementById('loc-label');
+  const dot=document.getElementById('loc-dot');
+  lbl.textContent=userLabel||'Ubicación';
+  dot.classList.remove('unset');
+  document.getElementById('radio-row').classList.remove('hidden');
+}
+function setRadio(el){document.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');radioKm=parseInt(el.dataset.km);if(document.getElementById('q').value.trim())buscar();}
+
+// ── Búsqueda ──────────────────────────────────────────────────────────────
+function setStatus(txt,type=''){
+  const dot=document.getElementById('status-dot');
+  document.getElementById('status-txt').textContent=txt;
+  dot.className='status-dot'+(type?' '+type:'');
+}
+
+function mkCard(s,dist){
+  const far=dist&&dist.distKm>radioKm;
+  const card=document.createElement('div');
+  card.className='scard'+(far?' far':'');
+  card.id='card-'+s.id;
+  let distH='';
+  if(dist){const km=dist.distKm.toFixed(1);const cls=dist.distKm<=2?'near':dist.distKm>radioKm?'far':'';distH=`<span class="sdist ${cls}">${km}km</span>`;}
+  card.innerHTML=`<div class="sheader"><div class="sdot" style="background:${s.color}"></div><span class="sname">${s.nombre}</span>${distH}</div><div class="sprods" id="prods-${s.id}"><div class="loading-card">Cargando…</div></div>`;
   return card;
 }
 
-function renderProds(sid, prods) {
-  const el = document.getElementById('prods-'+sid);
-  if (!el) return;
-  el.innerHTML = '';
-  if (!prods.length) { el.innerHTML = '<div class="pempty">Sin resultados</div>'; return; }
-  const minP = Math.min(...prods.map(p=>p.precio||0).filter(Boolean));
-  prods.slice(0,5).forEach(p => {
-    const precio = p.precio || parseFloat(p.price)||0;
-    const precioLista = p.precio_lista || precio;
-    const desc = p.descuento_pct||0;
-    const nombre = p.nombre||p.name||'';
-    const isBest = precio===minP;
-    const div = document.createElement('div');
-    div.className = 'pitem'+(isBest?' best':'');
-    const badge = desc>0 ? `<span class="pbadge">-${desc}%</span>` : '';
-    const old = precioLista>precio ? `<span class="pold">${fmt(precioLista)}</span>` : '';
-    const bestTag = isBest ? `<span class="pbest">↓ mejor</span>` : '';
-    div.innerHTML = `<div class="pname">${nombre}</div><div class="prow"><span class="pprice${isBest?' best':''}">${fmt(precio)}</span>${old}${badge}${bestTag}</div>`;
+function renderProds(sid,prods){
+  const el=document.getElementById('prods-'+sid);
+  if(!el)return;
+  el.innerHTML='';
+  if(!prods.length){el.innerHTML='<div class="pempty">Sin resultados</div>';return;}
+  const minP=Math.min(...prods.map(p=>p.precio||0).filter(Boolean));
+  prods.slice(0,5).forEach(p=>{
+    const precio=p.precio||0,precioLista=p.precio_lista||precio,desc=p.descuento_pct||0;
+    const isBest=precio===minP;
+    const div=document.createElement('div');
+    div.className='pitem'+(isBest?' best':'');
+    div.innerHTML=`<div class="pname">${p.nombre||''}</div><div class="prow"><span class="pprice${isBest?' best':''}">${fmt(precio)}</span>${precioLista>precio?`<span class="pold">${fmt(precioLista)}</span>`:''} ${desc>0?`<span class="pbadge">-${desc}%</span>`:''} ${isBest?`<span class="pbest">↓ mejor</span>`:''}</div>`;
     el.appendChild(div);
   });
 }
 
-async function buscar() {
-  const q = document.getElementById('q').value.trim();
-  if (!q) return;
+async function buscar(){
+  const q=document.getElementById('q').value.trim();
+  if(!q)return;
+  // Scroll suave al comparador
+  document.getElementById('topbar').scrollIntoView({behavior:'smooth',block:'start'});
 
-  setStatus('Buscando en 5 supermercados...', 'loading');
+  setStatus('Buscando en '+SUPERS.length+' supermercados…','loading');
   document.getElementById('banner-ganador').classList.add('hidden');
   document.getElementById('banner-distancia').classList.add('hidden');
   document.getElementById('summary').classList.add('hidden');
   document.getElementById('empty').classList.add('hidden');
 
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
 
-  // Calcular distancias para todas las sucursales
-  const distancias = {};
-  SUPERS.forEach(s => {
-    if (userLat) {
-      const suc = sucursalMasCercana(s.id);
-      if (suc) distancias[s.id] = suc;
-    }
-  });
+  const dists={};
+  if(userLat)SUPERS.forEach(s=>{const sc=sucMasCercana(s.id);if(sc)dists[s.id]=sc;});
+  let ord=[...SUPERS];
+  if(userLat)ord.sort((a,b)=>(dists[a.id]?.distKm??999)-(dists[b.id]?.distKm??999));
+  ord.forEach(s=>grid.appendChild(mkCard(s,dists[s.id]||null)));
 
-  // Construir cards — ordenadas por distancia si hay ubicación
-  let supersOrdenados = [...SUPERS];
-  if (userLat) {
-    supersOrdenados.sort((a,b) => {
-      const da = distancias[a.id]?.distKm ?? 999;
-      const db = distancias[b.id]?.distKm ?? 999;
-      return da - db;
-    });
-  }
-  supersOrdenados.forEach(s => grid.appendChild(mkCard(s, distancias[s.id]||null)));
+  try{
+    const res=await fetch(`${BACKEND}/v1/products/search?q=${encodeURIComponent(q)}&limit=25`);
+    const json=await res.json();
+    const data=json.data||[];
+    SUPERS.forEach(s=>renderProds(s.id,[]));
+    data.forEach(r=>renderProds(r.superId||r.super_id,r.productos||[]));
 
-  try {
-    const res = await fetch(`${BACKEND}/v1/products/search?q=${encodeURIComponent(q)}&limit=25`);
-    const json = await res.json();
-    const data = json.data || [];
+    const total=data.reduce((a,r)=>a+(r.productos||[]).length,0);
+    if(!total){setStatus('','');document.getElementById('empty').classList.remove('hidden');return;}
+    setStatus(total+' productos'+(userLat?' · ordenados por proximidad':''),'ok');
 
-    SUPERS.forEach(s => renderProds(s.id, []));
-    data.forEach(r => {
-      const sid = r.superId || r.super_id;
-      renderProds(sid, r.productos||[]);
-    });
-
-    const total = data.reduce((a,r)=>a+(r.productos||[]).length,0);
-
-    if (total === 0) {
-      setStatus('', 'normal');
-      document.getElementById('empty').classList.remove('hidden');
-      return;
-    }
-
-    // Calcular mínimos por super
-    const mins = SUPERS.map(s => {
-      const r = data.find(d=>(d.superId||d.super_id)===s.id);
-      const prods = r?.productos||[];
-      const precios = prods.map(p=>p.precio||0).filter(Boolean);
-      const dist = distancias[s.id];
-      return {...s, min: precios.length ? Math.min(...precios) : null, distKm: dist?.distKm??null, sucursal: dist?.nombre??null};
+    const mins=SUPERS.map(s=>{
+      const r=data.find(d=>(d.superId||d.super_id)===s.id);
+      const ps=(r?.productos||[]).map(p=>p.precio||0).filter(Boolean);
+      const dist=dists[s.id];
+      return{...s,min:ps.length?Math.min(...ps):null,distKm:dist?.distKm??null,sucursal:dist?.nombre??null};
     }).filter(s=>s.min!==null).sort((a,b)=>a.min-b.min);
 
-    const totalStr = userLat ? `${total} productos — ordenados por proximidad` : `${total} productos encontrados para "${q}"`;
-    setStatus(totalStr, 'normal');
-
-    // Ranking
-    if (mins.length) {
-      const srows = document.getElementById('srows');
-      srows.innerHTML = '';
-      mins.forEach((s,i) => {
-        const row = document.createElement('div');
-        row.className = 'srow';
-        const distTag = s.distKm !== null ? `<span class="sdist-tag">${s.distKm.toFixed(1)}km — ${s.sucursal||''}</span>` : '';
-        const tag = i===0 ? '<span class="stag">más barato</span>' : '';
-        row.innerHTML = `<div class="sleft"><div class="sdot-sm" style="background:${s.color}"></div>${s.nombre}${tag}${distTag}</div><span class="sprice${i===0?' best':''}">${fmt(s.min)}</span>`;
+    if(mins.length){
+      const srows=document.getElementById('srows');
+      srows.innerHTML='';
+      mins.forEach((s,i)=>{
+        const row=document.createElement('div');
+        row.className='srow';
+        const dtag=s.distKm!==null?`<span class="sdist-tag">${s.distKm.toFixed(1)}km · ${s.sucursal||''}</span>`:'';
+        row.innerHTML=`<div class="sleft"><div class="sdot-sm" style="background:${s.color}"></div><span>${s.nombre}</span>${i===0?'<span class="stag">más barato</span>':''}${dtag}</div><span class="sprice${i===0?' best':''}">${fmt(s.min)}</span>`;
         srows.appendChild(row);
       });
       document.getElementById('summary').classList.remove('hidden');
       document.getElementById('card-'+mins[0].id).classList.add('winner');
 
-      // Banner ganador
-      if (mins.length >= 2) {
-        const ahorro = Math.round(mins[mins.length-1].min - mins[0].min);
-        document.getElementById('banner-txt').innerHTML = `<strong>${mins[0].nombre}</strong> tiene el precio más bajo. Ahorrás hasta ${fmt(ahorro)} vs ${mins[mins.length-1].nombre}.`;
-        document.getElementById('banner-ganador').className = 'banner ganador';
+      if(mins.length>=2){
+        document.getElementById('banner-txt').innerHTML=`<strong>${mins[0].nombre}</strong> tiene el precio más bajo. Ahorrás hasta ${fmt(mins[mins.length-1].min-mins[0].min)} vs ${mins[mins.length-1].nombre}.`;
+        document.getElementById('banner-ganador').className='banner ganador';
       }
-
-      // Banner distancia — si el más barato está lejos, mostrar alternativa cercana
-      if (userLat && mins.length >= 2) {
-        const masBarato = mins[0];
-        const cercanos = mins.filter(s => s.distKm !== null && s.distKm <= radioKm);
-        if (masBarato.distKm !== null && masBarato.distKm > radioKm && cercanos.length) {
-          const alt = cercanos[0];
-          const difPrecio = Math.round(alt.min - masBarato.min);
-          document.getElementById('banner-dist-txt').innerHTML = `<strong>${masBarato.nombre}</strong> es el más barato pero está a ${masBarato.distKm.toFixed(1)}km. El más cercano dentro de ${radioKm}km es <strong>${alt.nombre}</strong> (${fmt(alt.min)}, +${fmt(difPrecio)} más caro).`;
-          document.getElementById('banner-distancia').className = 'banner distancia';
+      if(userLat&&mins.length>=2){
+        const masBarato=mins[0];
+        const cercanos=mins.filter(s=>s.distKm!==null&&s.distKm<=radioKm);
+        if(masBarato.distKm!==null&&masBarato.distKm>radioKm&&cercanos.length){
+          const alt=cercanos[0];
+          document.getElementById('banner-dist-txt').innerHTML=`<strong>${masBarato.nombre}</strong> es el más barato pero está a ${masBarato.distKm.toFixed(1)}km. El más cercano dentro de ${radioKm}km es <strong>${alt.nombre}</strong> (${fmt(alt.min)}).`;
+          document.getElementById('banner-distancia').className='banner distancia';
         }
       }
     }
-  } catch(e) {
-    setStatus('Error conectando al servidor. Intentá de nuevo.', 'error');
-  }
+  }catch{setStatus('Error conectando al servidor. Intentá de nuevo.','error');}
 }
 
-document.getElementById('q').addEventListener('keydown', e => { if(e.key==='Enter') buscar(); });
+function buscarDesdeHero(){
+  const q=document.getElementById('q-hero').value.trim();
+  if(!q)return;
+  document.getElementById('q').value=q;
+  buscar();
+}
 
-// Cargar ubicación guardada al iniciar
-cargarUbicacionDeStorage();
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')buscar();});
+cargarUbicacion();
 </script>
 </body>
 </html>
