@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrecioAlerta AR — Comparador de precios de supermercados</title>
+<meta name="description" content="Compará precios en DIA, Carrefour, Coto, Jumbo y Disco en tiempo real.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a}
+.header{background:#1a1a1a;color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px}
+.header h1{font-size:20px;font-weight:600}
+.header span{font-size:13px;color:#aaa}
+.container{max-width:900px;margin:0 auto;padding:16px}
+.search-row{display:flex;gap:8px;margin-bottom:16px}
+.search-row input{flex:1;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:100px;font-size:15px;outline:none;background:#fff}
+.search-row input:focus{border-color:#1a1a1a}
+.search-row button{background:#1a1a1a;color:#fff;border:none;border-radius:100px;padding:12px 20px;font-size:15px;cursor:pointer;white-space:nowrap}
+.search-row button:hover{background:#333}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{background:#fff;border:1px solid #e0e0e0;border-radius:100px;padding:6px 14px;font-size:13px;cursor:pointer;color:#555}
+.chip:hover{background:#f0f0f0}
+.status{font-size:13px;color:#888;margin-bottom:12px;min-height:20px}
+.ganador{background:#e1f5ee;border:1.5px solid #5dcaa5;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:14px;color:#085041}
+.ganador.hidden{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
+.scard{background:#fff;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.scard.winner{border:2px solid #1d9e75}
+.sheader{padding:10px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #f0f0f0}
+.sdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.sname{font-size:13px;font-weight:500}
+.scnt{font-size:11px;color:#aaa;margin-left:auto}
+.sprods{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:60px}
+.pitem{padding:8px 10px;border-radius:10px;border:1px solid #f0f0f0;background:#fafafa}
+.pitem.best{border-color:#1d9e75;background:#e1f5ee}
+.pname{font-size:12px;color:#1a1a1a;line-height:1.3;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.prow{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.pprice{font-size:14px;font-weight:600;color:#1a1a1a}
+.pprice.best{color:#0f6e56}
+.pold{font-size:11px;color:#bbb;text-decoration:line-through}
+.pbadge{font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;background:#fcebeb;color:#a32d2d}
+.pbadge.promo{background:#faeeda;color:#633806}
+.pbest{font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;background:#e1f5ee;color:#085041}
+.pempty{font-size:11px;color:#ccc;text-align:center;padding:16px 0}
+.loading{font-size:12px;color:#aaa;text-align:center;padding:16px 0}
+.summary{background:#fff;border:1px solid #e8e8e8;border-radius:14px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.srow:last-child{border-bottom:none}
+.sleft{display:flex;align-items:center;gap:7px}
+.sprice{font-weight:600;font-size:14px}
+.sprice.best{color:#0f6e56}
+.stag{font-size:10px;color:#085041;background:#e1f5ee;padding:1px 7px;border-radius:4px;margin-left:4px}
+.empty-state{text-align:center;padding:48px 16px;color:#aaa}
+.empty-state h2{font-size:20px;font-weight:500;color:#555;margin-bottom:8px}
+.empty-state p{font-size:14px;line-height:1.6}
+@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <span style="font-size:24px">🛒</span>
+  <div>
+    <h1>PrecioAlerta AR</h1>
+    <span>Comparador de precios — DIA · Carrefour · Coto · Jumbo · Disco</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="search-row">
+    <input type="text" id="q" placeholder="Buscar producto... ej: leche entera, aceite, yerba" value="">
+    <button onclick="buscar()">🔍 Comparar</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+  <p class="status" id="status">Buscá un producto para comparar precios en 5 supermercados.</p>
+  <div class="ganador hidden" id="ganador">🏆 <span id="ganador-txt"></span></div>
+  <div class="grid" id="grid"></div>
+  <div class="summary" id="summary" style="display:none"><div id="srows"></div></div>
+</div>
+
+<script>
+const BACKEND = 'https://precioalerta-backend-production.up.railway.app';
+const SUPERS = [
+  {id:'carrefour',nombre:'Carrefour',color:'#004A97'},
+  {id:'dia',      nombre:'DIA',      color:'#E30613'},
+  {id:'coto',     nombre:'Coto',     color:'#E30613'},
+  {id:'jumbo',    nombre:'Jumbo',    color:'#00813A'},
+  {id:'disco',    nombre:'Disco',    color:'#C8102E'},
+];
+const SUGERIDAS = ['leche entera','aceite girasol','yerba mate','arroz','fideos','azúcar','detergente','pollo'];
+const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
+
+// Chips
+const chipsEl = document.getElementById('chips');
+SUGERIDAS.forEach(s => {
+  const c = document.createElement('span');
+  c.className = 'chip'; c.textContent = s;
+  c.onclick = () => { document.getElementById('q').value = s; buscar(); };
+  chipsEl.appendChild(c);
+});
+
+function mkCard(s) {
+  const card = document.createElement('div');
+  card.className = 'scard'; card.id = 'card-'+s.id;
+  card.innerHTML = `<div class="sheader"><div class="sdot" style="background:${s.color}"></div><span class="sname">${s.nombre}</span><span class="scnt" id="cnt-${s.id}">—</span></div><div class="sprods" id="prods-${s.id}"><div class="loading">Cargando...</div></div>`;
+  return card;
+}
+
+function renderProds(sid, prods) {
+  const el = document.getElementById('prods-'+sid);
+  const cnt = document.getElementById('cnt-'+sid);
+  cnt.textContent = prods.length ? prods.length+' resultados' : '—';
+  el.innerHTML = '';
+  if (!prods.length) { el.innerHTML = '<div class="pempty">Sin resultados</div>'; return; }
+  const minP = Math.min(...prods.map(p=>p.precio||p.price||0));
+  prods.slice(0,5).forEach(p => {
+    const precio = p.precio || parseFloat(p.price) || 0;
+    const precioLista = p.precio_lista || parseFloat(p.price_list) || precio;
+    const desc = p.descuento_pct || p.discount_pct || 0;
+    const nombre = p.nombre || p.name || '';
+    const isBest = precio === minP;
+    const div = document.createElement('div');
+    div.className = 'pitem'+(isBest?' best':'');
+    const badge = desc > 0 ? `<span class="pbadge">-${desc}%</span>` : '';
+    const old = precioLista > precio ? `<span class="pold">${fmt(precioLista)}</span>` : '';
+    const bestTag = isBest ? `<span class="pbest">mejor precio</span>` : '';
+    div.innerHTML = `<div class="pname">${nombre}</div><div class="prow"><span class="pprice${isBest?' best':''}">${fmt(precio)}</span>${old}${badge}${bestTag}</div>`;
+    el.appendChild(div);
+  });
+}
+
+async function buscar() {
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  document.getElementById('status').textContent = 'Buscando en 5 supermercados...';
+  document.getElementById('ganador').classList.add('hidden');
+  document.getElementById('summary').style.display = 'none';
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  SUPERS.forEach(s => grid.appendChild(mkCard(s)));
+
+  try {
+    const res = await fetch(`${BACKEND}/v1/products/search?q=${encodeURIComponent(q)}&limit=25`);
+    const json = await res.json();
+    const data = json.data || [];
+
+    // Resetear todos a sin resultados
+    SUPERS.forEach(s => renderProds(s.id, []));
+
+    // Poblar con datos del backend
+    data.forEach(r => {
+      const sid = r.superId || r.super_id;
+      const prods = r.productos || [];
+      renderProds(sid, prods);
+    });
+
+    const total = data.reduce((a,r)=>a+(r.productos||[]).length,0);
+    document.getElementById('status').textContent = `${total} productos encontrados para "${q}"`;
+
+    // Ranking
+    const mins = SUPERS.map(s => {
+      const r = data.find(d=>(d.superId||d.super_id)===s.id);
+      const prods = r?.productos || [];
+      const precios = prods.map(p=>p.precio||0).filter(Boolean);
+      return {...s, min: precios.length ? Math.min(...precios) : null};
+    }).filter(s=>s.min!==null).sort((a,b)=>a.min-b.min);
+
+    if (mins.length) {
+      const srows = document.getElementById('srows');
+      srows.innerHTML = '';
+      mins.forEach((s,i) => {
+        const row = document.createElement('div');
+        row.className = 'srow';
+        row.innerHTML = `<div class="sleft"><div class="sdot" style="background:${s.color}"></div>${s.nombre}${i===0?'<span class="stag">más barato</span>':''}</div><span class="sprice${i===0?' best':''}">${fmt(s.min)}</span>`;
+        srows.appendChild(row);
+      });
+      document.getElementById('summary').style.display = 'block';
+      document.getElementById('card-'+mins[0].id).classList.add('winner');
+
+      if (mins.length >= 2) {
+        const ahorro = Math.round(mins[mins.length-1].min - mins[0].min);
+        document.getElementById('ganador-txt').innerHTML = `<strong>${mins[0].nombre}</strong> tiene el precio más bajo. Ahorrás hasta ${fmt(ahorro)} vs ${mins[mins.length-1].nombre}.`;
+        document.getElementById('ganador').classList.remove('hidden');
+      }
+    }
+  } catch(e) {
+    document.getElementById('status').textContent = 'Error conectando al servidor. Intentá de nuevo.';
+    console.error(e);
+  }
+}
+
+document.getElementById('q').addEventListener('keydown', e => { if(e.key==='Enter') buscar(); });
+</script>
+</body>
+</html>
