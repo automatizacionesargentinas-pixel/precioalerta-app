@@ -18,7 +18,10 @@
     "react-native-safe-area-context": "^5.8.0",
     "react-native-screens": "^4.25.2",
     "react-native-vector-icons": "^10.3.0",
-    "zustand": "^5.0.13"
+    "zustand": "^5.0.13",
+    "react-dom": "^19.0.0",
+    "react-native-web": "^0.21.2",
+    "@expo/metro-runtime": "~4.0.1"
   },
   "scripts": {
     "start": "expo start",
