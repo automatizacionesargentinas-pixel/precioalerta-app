@@ -127,7 +127,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="header-left">
     <div>
       <h1>🛒 PrecioAlerta AR</h1>
-      <div class="header-sub">Comparador de precios · DIA · Carrefour · Coto · Jumbo · Disco</div>
+      <div class="header-sub">Comparador de precios · DIA · Carrefour · Coto · Jumbo · Disco · Changomás · VEA</div>
     </div>
   </div>
   <div class="location-bar" onclick="abrirModal()">
@@ -191,11 +191,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 // ─── Constantes ───────────────────────────────────────────────────────────────
 const BACKEND = 'https://precioalerta-backend-production.up.railway.app';
 const SUPERS = [
-  {id:'carrefour', nombre:'Carrefour', color:'#004A97'},
-  {id:'dia',       nombre:'DIA',       color:'#E30613'},
-  {id:'coto',      nombre:'Coto',      color:'#CC0000'},
-  {id:'jumbo',     nombre:'Jumbo',     color:'#00813A'},
-  {id:'disco',     nombre:'Disco',     color:'#C8102E'},
+  {id:'carrefour',  nombre:'Carrefour',  color:'#004A97'},
+  {id:'dia',        nombre:'DIA',        color:'#E30613'},
+  {id:'coto',       nombre:'Coto',       color:'#CC0000'},
+  {id:'jumbo',      nombre:'Jumbo',      color:'#00813A'},
+  {id:'disco',      nombre:'Disco',      color:'#C8102E'},
+  {id:'changomas',  nombre:'Changomás',  color:'#FF6600'},
+  {id:'vea',        nombre:'VEA',        color:'#0070C0'},
 ];
 const SUGERIDAS = ['leche entera','aceite girasol','yerba mate','arroz','fideos','azúcar','detergente','pollo'];
 
@@ -284,9 +286,37 @@ const SUCURSALES = {
     {nombre:'Disco Mar del Plata',       lat:-38.0051, lon:-57.5481},
     {nombre:'Disco Rosario',             lat:-32.9489, lon:-60.6734},
   ],
+  changomas: [
+    {nombre:'Changomás Quilmes',         lat:-34.7231, lon:-58.2578},
+    {nombre:'Changomás Avellaneda',      lat:-34.6647, lon:-58.3703},
+    {nombre:'Changomás Lanús',           lat:-34.7038, lon:-58.3912},
+    {nombre:'Changomás Lomas de Zamora', lat:-34.7601, lon:-58.3989},
+    {nombre:'Changomás Florencio Varela',lat:-34.8019, lon:-58.2731},
+    {nombre:'Changomás San Justo',       lat:-34.6839, lon:-58.5612},
+    {nombre:'Changomás Morón',           lat:-34.6524, lon:-58.6201},
+    {nombre:'Changomás La Plata',        lat:-34.9221, lon:-57.9548},
+    {nombre:'Changomás Mar del Plata',   lat:-38.0101, lon:-57.5502},
+    {nombre:'Changomás Rosario',         lat:-32.9534, lon:-60.6721},
+    {nombre:'Changomás Córdoba',         lat:-31.4112, lon:-64.1821},
+    {nombre:'Changomás Mendoza',         lat:-32.8931, lon:-68.8261},
+    {nombre:'Changomás Neuquén',         lat:-38.9516, lon:-68.0591},
+    {nombre:'Changomás San Luis',        lat:-33.2951, lon:-66.3361},
+  ],
+  vea: [
+    {nombre:'VEA Quilmes',               lat:-34.7209, lon:-58.2597},
+    {nombre:'VEA La Plata',              lat:-34.9201, lon:-57.9567},
+    {nombre:'VEA Mar del Plata',         lat:-38.0071, lon:-57.5491},
+    {nombre:'VEA Mendoza',               lat:-32.8921, lon:-68.8231},
+    {nombre:'VEA Rosario',               lat:-32.9478, lon:-60.6678},
+    {nombre:'VEA Córdoba',               lat:-31.4071, lon:-64.1789},
+    {nombre:'VEA San Juan',              lat:-31.5378, lon:-68.5198},
+    {nombre:'VEA Tucumán',               lat:-26.8241, lon:-65.2031},
+    {nombre:'VEA Neuquén',               lat:-38.9489, lon:-68.0612},
+    {nombre:'VEA Bahía Blanca',          lat:-38.7183, lon:-62.2663},
+  ],
 };
 
-// ─── Estado ───────────────────────────────────────────────────────────────────
+// ─── Estado ──────────────────────────────────────────────────────────────────
 let userLat = null, userLon = null, userLabel = '', radioKm = 5;
 const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
 
