@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PrecioAlerta AR — Comparador de precios de supermercados</title>
-<meta name="description" content="Compará precios en DIA, Carrefour, Coto, Jumbo y Disco cerca tuyo en tiempo real.">
+<title>Ahorramás — Compará precios de supermercados en Argentina</title>
+<meta name="description" content="Compará precios en DIA, Carrefour, Coto, Jumbo, Disco, Changomás y VEA en tiempo real. Encontrá el supermercado más barato cerca tuyo.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
@@ -126,8 +126,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="header">
   <div class="header-left">
     <div>
-      <h1>🛒 PrecioAlerta AR</h1>
-      <div class="header-sub">Comparador de precios · DIA · Carrefour · Coto · Jumbo · Disco · Changomás · VEA</div>
+      <h1>🛒 Ahorramás</h1>
+      <div class="header-sub">Compará precios en 7 supermercados argentinos</div>
     </div>
   </div>
   <div class="location-bar" onclick="abrirModal()">
@@ -354,7 +354,7 @@ async function usarGeolocalizacion() {
     userLon = pos.coords.longitude;
     // Geocodificación inversa con Nominatim
     try {
-      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&accept-language=es`, {headers:{'User-Agent':'PrecioAlertaAR/1.0'}});
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&accept-language=es`, {headers:{'User-Agent':'Ahorramas/1.0'}});
       const d = await r.json();
       const barrio = d.address?.suburb || d.address?.neighbourhood || d.address?.village || '';
       const ciudad = d.address?.city || d.address?.town || d.address?.municipality || '';
@@ -386,7 +386,7 @@ async function guardarCP() {
       userLabel = `${loc.nombre}, ${loc.provincia.nombre} (CP ${cp})`;
     } else {
       // Fallback: Nominatim
-      const r2 = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cp}&country=Argentina&format=json&limit=1`, {headers:{'User-Agent':'PrecioAlertaAR/1.0'}});
+      const r2 = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cp}&country=Argentina&format=json&limit=1`, {headers:{'User-Agent':'Ahorramas/1.0'}});
       const d2 = await r2.json();
       if (d2.length) {
         userLat = parseFloat(d2[0].lat);
