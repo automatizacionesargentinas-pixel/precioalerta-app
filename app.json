@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "PrecioAlerta AR",
-    "slug": "precioalerta-app",
+    "name": "Ahorramás",
+    "slug": "ahorramas",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,12 +10,16 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "ar.com.ahorramas.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1A7A4A"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -26,6 +30,12 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "description": "Compará precios en 7 supermercados argentinos en tiempo real. DIA, Carrefour, Coto, Jumbo, Disco, Changomás y VEA.",
+    "extra": {
+      "eas": {
+        "projectId": "configurar-en-expo-dev"
+      }
+    }
   }
 }
