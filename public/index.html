@@ -487,6 +487,157 @@ body { font-family: var(--font-body); background: var(--blanco); color: var(--te
   .topbar-search { max-width: 100%; flex: 1 1 100%; order: 3; }
   .hero-stat { padding: 0 20px; }
 }
+
+/* ── Panel Alertas ─────────────────────────────────────────────────────────── */
+.alertas-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 90;
+  background: var(--verde);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 14px 22px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(26,122,74,.35);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all .2s;
+}
+.alertas-fab:hover { background: var(--verde2); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,122,74,.4); }
+.alertas-fab .badge {
+  background: var(--acento);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 11px;
+  padding: 2px 7px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
+.alertas-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0,0,0,.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+  padding: 0 0 0 0;
+}
+.alertas-panel.open { opacity: 1; pointer-events: all; }
+.alertas-sheet {
+  background: var(--blanco);
+  border-radius: var(--r2) var(--r2) 0 0;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .3s cubic-bezier(.22,.68,0,1.2);
+  padding: 0 0 40px;
+}
+.alertas-panel.open .alertas-sheet { transform: translateY(0); }
+.alertas-sheet-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--gris1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--blanco);
+  z-index: 1;
+}
+.alertas-sheet-header h2 { font-family: var(--font-display); font-size: 18px; font-weight: 800; }
+.sheet-close { background: var(--gris1); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; color: var(--gris3); display: flex; align-items: center; justify-content: center; }
+
+/* Card premium */
+.premium-card {
+  margin: 16px;
+  background: linear-gradient(135deg, var(--negro) 0%, #1A3A25 100%);
+  border-radius: var(--r2);
+  padding: 20px;
+  color: #fff;
+}
+.premium-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.premium-badge { background: var(--acento); color: var(--negro); font-family: var(--font-display); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 100px; letter-spacing: .04em; }
+.premium-titulo { font-family: var(--font-display); font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.premium-sub { font-size: 13px; color: rgba(255,255,255,.6); margin-bottom: 16px; line-height: 1.5; }
+.premium-features { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.premium-feature { font-size: 13px; color: rgba(255,255,255,.85); display: flex; align-items: center; gap: 8px; }
+.premium-feature::before { content: '✓'; color: var(--acento); font-weight: 700; flex-shrink: 0; }
+.btn-premium {
+  width: 100%;
+  padding: 14px;
+  background: var(--acento);
+  color: var(--negro);
+  border: none;
+  border-radius: var(--r);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.btn-premium:hover { background: var(--acento2); transform: scale(1.01); }
+.btn-premium:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Lista de alertas */
+.alertas-lista { padding: 8px 16px; }
+.alerta-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--gris1);
+  border-radius: var(--r);
+  margin-bottom: 8px;
+  border: 1px solid var(--gris2);
+}
+.alerta-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.alerta-info { flex: 1; min-width: 0; }
+.alerta-nombre { font-size: 13px; font-weight: 500; color: var(--texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.alerta-precio { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--verde); }
+.alerta-meta { font-size: 11px; color: var(--gris3); }
+.btn-eliminar-alerta { background: none; border: none; color: var(--gris3); cursor: pointer; padding: 4px; font-size: 18px; flex-shrink: 0; transition: color .15s; }
+.btn-eliminar-alerta:hover { color: var(--rojo); }
+.alertas-empty { text-align: center; padding: 32px 16px; color: var(--gris3); font-size: 14px; }
+.alertas-empty-icon { font-size: 40px; margin-bottom: 10px; }
+
+/* Barra de progreso de alertas */
+.alertas-progress { padding: 12px 16px 4px; }
+.alertas-progress-bar { height: 6px; background: var(--gris2); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.alertas-progress-fill { height: 100%; background: var(--verde); border-radius: 3px; transition: width .4s ease; }
+.alertas-progress-fill.lleno { background: var(--acento); }
+.alertas-progress-label { font-size: 12px; color: var(--gris3); display: flex; justify-content: space-between; }
+
+/* Botón agregar alerta en cards de producto */
+.btn-alerta-prod {
+  background: none;
+  border: 1px solid var(--gris2);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--gris3);
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-alerta-prod:hover { border-color: var(--verde); color: var(--verde); background: var(--verde-light); }
+
 </style>
 </head>
 <body>
@@ -797,6 +948,217 @@ function buscarDesdeHero(){
 
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')buscar();});
 cargarUbicacion();
+
+
+// ── Sistema de Alertas & Freemium ─────────────────────────────────────────────
+
+const DEVICE_ID = (()=>{
+  let id = localStorage.getItem('pa_device_id');
+  if (!id) { id = 'dev_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('pa_device_id', id); }
+  return id;
+})();
+
+let estadoUsuario = { plan: 'free', alertas: { actuales: 0, limite: 3 }, esPremium: false };
+let alertasActivas = [];
+
+async function cargarEstadoUsuario() {
+  try {
+    const [statusRes, alertasRes] = await Promise.all([
+      fetch(`${BACKEND}/v1/user/status?device_id=${DEVICE_ID}`),
+      fetch(`${BACKEND}/v1/alerts?device_id=${DEVICE_ID}`),
+    ]);
+    const statusJson  = await statusRes.json();
+    const alertasJson = await alertasRes.json();
+    estadoUsuario = statusJson.data;
+    alertasActivas = alertasJson.data || [];
+    actualizarUIAlertas();
+  } catch { /* silencioso */ }
+}
+
+function actualizarUIAlertas() {
+  const { plan, alertas, esPremium } = estadoUsuario;
+  const n = alertas.actuales;
+  const lim = alertas.limite || 3;
+
+  // Badge FAB
+  const badge = document.getElementById('alertas-badge');
+  if (n > 0) { badge.textContent = n; badge.style.display = 'inline'; }
+  else badge.style.display = 'none';
+
+  // Barra progreso
+  const pct = lim ? Math.min(100, (n/lim)*100) : 0;
+  const fill = document.getElementById('alertas-progress-fill');
+  if (fill) { fill.style.width = pct + '%'; fill.className = 'alertas-progress-fill' + (pct >= 100 ? ' lleno' : ''); }
+  const countLbl = document.getElementById('alertas-count-label');
+  if (countLbl) countLbl.textContent = esPremium ? `${n} (ilimitadas)` : `${n} / ${lim}`;
+
+  // Ocultar card premium si ya es premium
+  const premiumCard = document.getElementById('premium-card');
+  if (premiumCard) {
+    if (esPremium) {
+      premiumCard.style.background = 'linear-gradient(135deg, #0A5C36 0%, #1A7A4A 100%)';
+      document.querySelector('.premium-titulo').textContent = '⭐ Plan Premium activo';
+      document.querySelector('.premium-sub').textContent = 'Tenés alertas ilimitadas e historial extendido habilitados.';
+      document.getElementById('btn-premium').textContent = '✓ Premium activo';
+      document.getElementById('btn-premium').disabled = true;
+    }
+  }
+
+  // Renderizar lista
+  renderizarAlertas();
+}
+
+function renderizarAlertas() {
+  const lista = document.getElementById('alertas-lista');
+  if (!lista) return;
+  if (!alertasActivas.length) {
+    lista.innerHTML = '<div class="alertas-empty"><div class="alertas-empty-icon">🔔</div><p>No tenés alertas activas.<br>Buscá un producto y creá tu primera alerta.</p></div>';
+    return;
+  }
+  lista.innerHTML = alertasActivas.map(a => `
+    <div class="alerta-item" id="alerta-${a.id}">
+      <div class="alerta-dot" style="background:${a.super_color||'#888'}"></div>
+      <div class="alerta-info">
+        <div class="alerta-nombre">${a.producto_nombre || 'Producto'}</div>
+        <div class="alerta-precio">Alertar cuando baje de ${fmt(a.precio_objetivo)}</div>
+        <div class="alerta-meta">${a.super_nombre||'Cualquier super'} · Creada ${new Date(a.creada_en).toLocaleDateString('es-AR')}</div>
+      </div>
+      <button class="btn-eliminar-alerta" onclick="eliminarAlerta(${a.id})" title="Eliminar alerta">🗑</button>
+    </div>
+  `).join('');
+}
+
+async function crearAlerta({ productoId, superId, superNombre, superColor, productoNombre, precioActual }) {
+  const precioObj = parseFloat(prompt(
+    `Crear alerta para "${productoNombre}"\n\nPrecio actual: ${fmt(precioActual)}\n\n¿A qué precio querés que te avisemos? (en pesos)`
+  ));
+  if (!precioObj || isNaN(precioObj) || precioObj <= 0) return;
+
+  const res = await fetch(`${BACKEND}/v1/alerts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      device_id: DEVICE_ID,
+      producto_id: productoId,
+      super_id: superId,
+      precio_objetivo: precioObj,
+      producto_nombre: productoNombre,
+    }),
+  });
+  const json = await res.json();
+
+  if (json.ok === false && json.error === 'limite_alcanzado') {
+    if (confirm(`${json.mensaje}\n\n¿Querés activar Premium para alertas ilimitadas?`)) {
+      abrirAlertas();
+    }
+    return;
+  }
+
+  if (json.ok) {
+    alert(`✅ Alerta creada. Te avisamos cuando baje a ${fmt(precioObj)}.`);
+    await cargarEstadoUsuario();
+  }
+}
+
+async function eliminarAlerta(id) {
+  if (!confirm('¿Eliminar esta alerta?')) return;
+  const res = await fetch(`${BACKEND}/v1/alerts/${id}?device_id=${DEVICE_ID}`, { method: 'DELETE' });
+  if (res.ok) {
+    document.getElementById(`alerta-${id}`)?.remove();
+    await cargarEstadoUsuario();
+  }
+}
+
+async function activarPremium() {
+  const btn = document.getElementById('btn-premium');
+  btn.disabled = true;
+  btn.textContent = 'Redirigiendo a MercadoPago...';
+  try {
+    const res = await fetch(`${BACKEND}/v1/premium/checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_id: DEVICE_ID }),
+    });
+    const json = await res.json();
+    if (json.ok && json.data?.url) {
+      window.open(json.data.url, '_blank');
+    } else {
+      alert('Servicio de pago no disponible aún. Próximamente.');
+    }
+  } catch {
+    alert('Error al conectar con MercadoPago. Intentá de nuevo.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Activar Premium — $1.500 ARS/mes';
+  }
+}
+
+function abrirAlertas() {
+  document.getElementById('alertas-panel').classList.add('open');
+  cargarEstadoUsuario();
+}
+function cerrarAlertas() { document.getElementById('alertas-panel').classList.remove('open'); }
+document.getElementById('alertas-panel').addEventListener('click', e => {
+  if (e.target === document.getElementById('alertas-panel')) cerrarAlertas();
+});
+
+// Inicializar al cargar
+cargarEstadoUsuario();
+
 </script>
+
+<!-- ── FAB Alertas ────────────────────────────────────────────────────────── -->
+<button class="alertas-fab" id="alertas-fab" onclick="abrirAlertas()">
+  🔔 Mis alertas <span class="badge" id="alertas-badge" style="display:none">0</span>
+</button>
+
+<!-- ── Panel de Alertas ───────────────────────────────────────────────────── -->
+<div class="alertas-panel" id="alertas-panel">
+  <div class="alertas-sheet">
+    <div class="alertas-sheet-header">
+      <h2>🔔 Mis alertas</h2>
+      <button class="sheet-close" onclick="cerrarAlertas()">✕</button>
+    </div>
+
+    <!-- Card Premium -->
+    <div class="premium-card" id="premium-card">
+      <div class="premium-card-top">
+        <span class="premium-badge">PREMIUM</span>
+        <span id="premium-status-badge"></span>
+      </div>
+      <div class="premium-titulo">Alertas ilimitadas</div>
+      <div class="premium-sub">Con el plan gratuito tenés 3 alertas. Actualizá para alertas ilimitadas e historial extendido.</div>
+      <div class="premium-features">
+        <div class="premium-feature">Alertas de precio ilimitadas</div>
+        <div class="premium-feature">Historial de precios 90 días</div>
+        <div class="premium-feature">Notificaciones push en tiempo real</div>
+        <div class="premium-feature">Sin publicidad</div>
+      </div>
+      <button class="btn-premium" id="btn-premium" onclick="activarPremium()">
+        Activar Premium — $1.500 ARS/mes
+      </button>
+    </div>
+
+    <!-- Progreso -->
+    <div class="alertas-progress" id="alertas-progress">
+      <div class="alertas-progress-label">
+        <span>Alertas activas</span>
+        <span id="alertas-count-label">0 / 3</span>
+      </div>
+      <div class="alertas-progress-bar">
+        <div class="alertas-progress-fill" id="alertas-progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div class="alertas-lista" id="alertas-lista">
+      <div class="alertas-empty">
+        <div class="alertas-empty-icon">🔔</div>
+        Cargando alertas...
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
